@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 require("dotenv").config();
-const API = import.meta.env.VITE_API_URL;
 
 const sequelize = require("./config/db");
 
