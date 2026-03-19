@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import Signup from "../pages/Signup";
 import Login from "../pages/Login";
-import VerifyOtp from "../pages/Verifyotp";
+import VerifyOtp from "../pages/VerifyOtp";
 import ForgotPassword from "../pages/ForgotPassword";
 import VerifyResetOtp from "../pages/VerifyResetOtp";
 import ResetPassword from "../pages/ResetPassword";
