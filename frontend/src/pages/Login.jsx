@@ -40,6 +40,7 @@ const Login = ({ close, openSignup, openOtp, openForgot }) => {
             if (res.data.role === "employee") {
 
                 localStorage.setItem("token", res.data.token);
+                localStorage.setItem("role", res.data.role);
                 toast.success("Login successful");
 
                 close();

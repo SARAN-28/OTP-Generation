@@ -8,6 +8,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import EmployeeDashboard from "./pages/EmployeeDashboard";
 import AdminInvite from "./pages/AdminInvite";
 import AcceptInvite from "./pages/AcceptInvite";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
     return (
@@ -19,9 +20,9 @@ function App() {
             <Routes>
                 <Route path="/" element={<Home />} />
 
-                <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                <Route path="/admin-dashboard" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
 
-                <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
+                <Route path="/employee-dashboard" element={<ProtectedRoute role="employee"><EmployeeDashboard /></ProtectedRoute>} />
 
                 <Route path="/admin-invite" element={<AdminInvite />} />
 
