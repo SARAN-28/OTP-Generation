@@ -12,6 +12,8 @@ const Login = ({ close, openSignup, openOtp, openForgot }) => {
         password: ""
     });
 
+    const [loading, setLoading] = useState(false)
+
     const handleChange = (e) => {
         setFormData({
             ...formData,
@@ -31,6 +33,7 @@ const Login = ({ close, openSignup, openOtp, openForgot }) => {
         }
 
         try {
+            setLoading(true)
 
             const res = await api.post("/login", formData);
 
@@ -54,6 +57,8 @@ const Login = ({ close, openSignup, openOtp, openForgot }) => {
             toast.error(
                 error.response?.data?.message || "Server error"
             );
+        } finally {
+            setLoading(false)
         }
     };
     return (
@@ -67,19 +72,21 @@ const Login = ({ close, openSignup, openOtp, openForgot }) => {
                         <i className="fa-solid fa-circle-xmark" style={{ color: "#ff0505" }}></i>
                     </span>
 
-                    <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} />
+                    <input name="email" placeholder="Email" value={formData.email} onChange={handleChange} disabled={loading} />
 
-                    <input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} />
+                    <input name="password" type="password" placeholder="Password" value={formData.password} onChange={handleChange} disabled={loading}/>
 
                     <p className="forgot-link" onClick={() => {
-                            close();
-                            openForgot();
-                        }}
+                        close();
+                        openForgot();
+                    }}
                     >
                         Forgot Password?
                     </p>
 
-                    <button type="submit">Login</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Logging in..." : "Login"}
+                    </button>
 
                     <p className="login-signup-text">
                         Don't have an account?

@@ -6,20 +6,18 @@ require("dotenv").config();
 
 exports.sendInvite = async (req, res) => {
 
-    const { name, email, defaultPassword } = req.body;
+    const { name, email, employee_id } = req.body;
     try {
 
         const token = crypto.randomBytes(32).toString("hex");
 
         const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
-        const hashedDefaultPassword = await bcrypt.hash(defaultPassword, 10)
-
         await Invite.create({
             name,
             email,
+            employee_id,
             token,
-            default_password: hashedDefaultPassword,
             expires_at: expires
         });
 
@@ -36,14 +34,13 @@ exports.sendInvite = async (req, res) => {
 
         await transporter.sendMail({
             to: email,
-            subject: "Employee Invitation",
+            subject: "You're Invited",
             html: `
-        <h1>Welcome Employee</h1>
+        <h1>Welcome ${name}</h1>
         <h2>You are invited to join the portal <br>
-        <h3>Your Default Password: <b>${defaultPassword}</b></h3><br>
-        <a href="${inviteLink}">Accept Invitation</a></h2>
+        <a href="${inviteLink}">Accept Invite</a></h2>
         <h3>Don't share the link to any one. <br>
-        <strong>Note:</strong>Invite link is valid for 1 day.</h3> `
+        <strong>Note: </strong>Invite link is valid for 1 day.</h3> `
         });
         res.json({
             message: "Invitation successfully sent to Employee"

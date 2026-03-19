@@ -23,10 +23,10 @@ const Invite = sequelize.define("Invite", {
         defaultValue: "employee"
     },
 
-    default_password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
+    employee_id: {
+    type: DataTypes.STRING,
+    allowNull: false
+},
 
     expires_at: {
         type: DataTypes.DATE,

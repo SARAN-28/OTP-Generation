@@ -340,7 +340,7 @@ exports.resetPassword = async (req, res) => {
 
 exports.acceptInvite = async (req, res) => {
 
-    const { token, defaultPassword, newPassword} = req.body;
+    const { token, password} = req.body;
 
     try {
         const invite = await Invite.findOne({
@@ -355,31 +355,21 @@ exports.acceptInvite = async (req, res) => {
 
         if (new Date() > invite.expires_at) {
             return res.status(400).json({
-                message: "Invite expired"
+                message: "Token expired"
             });
         }
 
-        const isMatch = await bcrypt.compare(
-            defaultPassword,
-            invite.default_password
-        );
-
-        if (!isMatch) {
-            return res.status(400).json({
-                message: "Wrong default password"
-            });
-        }
-
-        const hashedPassword = await bcrypt.hash(newPassword, 10);
+         const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
             name: invite.name,
             email: invite.email,
+            employee_id: invite.employee_id,
             password: hashedPassword,
             role: invite.role
         });
 
-        await invite.destroy();
+        // await invite.destroy();
 
         res.json({
             message: "Account created successfully"

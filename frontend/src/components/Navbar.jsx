@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import Signup from "../pages/Signup";
 import Login from "../pages/Login";
 import VerifyOtp from "../pages/Verifyotp";
@@ -8,7 +9,10 @@ import ResetPassword from "../pages/ResetPassword";
 import "../styles/navbar.css";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
@@ -17,7 +21,23 @@ const Navbar = () => {
   const [showVerify, setShowVerify] = useState(false);
   const [showReset, setShowReset] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
-  
+
+  useEffect(() => {
+    const userToken = localStorage.getItem("token");
+
+    if (userToken) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [location.pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+    navigate("/");
+  };
+
   const openForgot = () => setShowForgot(true);
 
   const openVerify = (email) => {
@@ -40,8 +60,16 @@ const Navbar = () => {
         </div>
 
         <div className="nav-buttons">
-          <button className="nav-btn" onClick={() => setShowLogin(true)}>Login</button>
-          <button className="nav-btn" onClick={() => setShowSignup(true)}>Signup</button>
+          {isLoggedIn ? (
+            <button className="nav-btn" onClick={handleLogout}>
+              Logout
+            </button>
+          ) : (
+            <>
+              <button className="nav-btn" onClick={() => setShowLogin(true)}>Login</button>
+              <button className="nav-btn" onClick={() => setShowSignup(true)}>Signup</button>
+            </>
+          )}
         </div>
       </nav>
 
