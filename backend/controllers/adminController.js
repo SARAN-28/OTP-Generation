@@ -1,12 +1,15 @@
 const Invite = require("../models/invite");
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
+
+const { Resend } = require("resend");
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 exports.sendInvite = async (req, res) => {
 
     const { name, email, employee_id } = req.body;
+
     try {
 
         const token = crypto.randomBytes(32).toString("hex");
@@ -24,30 +27,25 @@ exports.sendInvite = async (req, res) => {
         const inviteLink =
             `${process.env.FRONTEND_URL}/accept-invite?token=${token}`;
 
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
-        await transporter.sendMail({
+        await resend.emails.send({
+            from: "onboarding@resend.dev",
             to: email,
             subject: "You're Invited",
             html: `
-        <h1>Welcome ${name}</h1>
-        <h2>You are invited to join the portal <br>
-        <a href="${inviteLink}">Accept Invite</a></h2>
-        <h3>Don't share the link to any one. <br>
-        <strong>Note: </strong>Invite link is valid for 1 day.</h3> `
+                <h1>Welcome ${name}</h1>
+                <h2>You are invited to join the portal <br>
+                <a href="${inviteLink}">Accept Invite</a></h2>
+                <h3>Don't share the link to anyone. <br>
+                <strong>Note:</strong> Invite link is valid for 1 day.</h3>
+            `
         });
+
         res.json({
             message: "Invitation successfully sent to Employee"
         });
 
     } catch (error) {
-        console.log(error);
+        console.log("INVITE ERROR:", error);
         res.status(500).json({
             message: "Server error"
         });
