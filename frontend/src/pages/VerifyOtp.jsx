@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 const VerifyOtp = ({ email, close }) => {
 
     const [otp, setOtp] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const navigate = useNavigate();
     
@@ -19,6 +20,8 @@ const VerifyOtp = ({ email, close }) => {
         }
 
         try {
+            setLoading(true)
+
             const res = await api.post("/verify-otp", {
                 email,
                 otp
@@ -35,6 +38,8 @@ const VerifyOtp = ({ email, close }) => {
             toast.error(
                 error.response?.data?.message || "Server error"
             );
+        } finally{
+            setLoading(false)
         }
     };
 
@@ -49,10 +54,10 @@ const VerifyOtp = ({ email, close }) => {
                         <i className="fa-solid fa-circle-xmark" style={{ color: "#ff0505" }}></i>
                     </span>
 
-                    <input type="text" placeholder="Enter 6-digit OTP" value={otp} onChange={(e) => setOtp(e.target.value)} />
+                    <input type="text" placeholder="Enter 6-digit OTP" value={otp} onChange={(e) => setOtp(e.target.value)} disabled={loading}/>
 
-                    <button type="submit">
-                        Verify OTP
+                    <button type="submit" disabled={loading}>
+                        {loading ? "OTP Verifying..." : "Verify OTP"}
                     </button>
                 </form>
 

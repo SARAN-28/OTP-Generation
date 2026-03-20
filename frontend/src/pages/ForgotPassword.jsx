@@ -6,11 +6,14 @@ import "../styles/dialog.css";
 const ForgotPassword = ({ close, openVerify }) => {
 
     const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleSendOtp = async (e) => {
         e.preventDefault();
 
         try {
+            setLoading(true);
+
             await api.post("/forgot-password", { email });
 
             toast.success("OTP sent to your email");
@@ -19,6 +22,8 @@ const ForgotPassword = ({ close, openVerify }) => {
             openVerify(email);
         } catch (error) {
             toast.error(error.response?.data?.message || "Error sending OTP");
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -33,8 +38,10 @@ const ForgotPassword = ({ close, openVerify }) => {
                 <h3>Forgot Password</h3>
 
                 <form onSubmit={handleSendOtp}>
-                    <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-                    <button type="submit">Send OTP</button>
+                    <input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={loading} />
+                    <button type="submit" disabled={loading}>
+                        {loading ? "Sending OTP..." : "Send OTP"}
+                    </button>
                 </form>
             </div>
         </div>

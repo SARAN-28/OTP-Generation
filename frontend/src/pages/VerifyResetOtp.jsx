@@ -6,11 +6,14 @@ import "../styles/dialog.css";
 const VerifyResetOtp = ({ email, close, openReset }) => {
 
     const [otp, setOtp] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const handleVerifyOtp = async (e) => {
         e.preventDefault();
 
         try {
+            setLoading(true)
+            
             await api.post("/verify-reset-otp", {
                 email,
                 otp
@@ -24,6 +27,8 @@ const VerifyResetOtp = ({ email, close, openReset }) => {
 
         } catch (error) {
             toast.error(error.response?.data?.message || "Invalid OTP");
+        } finally{
+            setLoading(false)
         }
     };
     return (
@@ -37,9 +42,11 @@ const VerifyResetOtp = ({ email, close, openReset }) => {
                 <h3>Verify OTP</h3>
 
                 <form onSubmit={handleVerifyOtp}>
-                    <input placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} />
+                    <input placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} disabled={loading}/>
 
-                    <button type="submit">Verify OTP</button>
+                    <button type="submit" disabled={loading}>
+                        {loading ? "OTP Verifying..." : "Verify OTP"}
+                    </button>
                 </form>
             </div>
         </div>
