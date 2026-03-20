@@ -244,10 +244,10 @@ exports.forgotPassword = async (req, res) => {
         });
 
     } catch (error) {
-    console.log("FORGOT PASSWORD ERROR:", error);
-    res.status(500).json({
-        message: error.message
-    });
+        console.log("FORGOT PASSWORD ERROR:", error);
+        res.status(500).json({
+            message: error.message
+        });
     }
 };
 
@@ -340,7 +340,7 @@ exports.resetPassword = async (req, res) => {
 
 exports.acceptInvite = async (req, res) => {
 
-    const { token, password} = req.body;
+    const { token, password } = req.body;
 
     try {
         const invite = await Invite.findOne({
@@ -359,26 +359,26 @@ exports.acceptInvite = async (req, res) => {
             });
         }
 
-         const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await bcrypt.hash(password, 10);
 
         await User.create({
             name: invite.name,
             email: invite.email,
             employee_id: invite.employee_id,
             password: hashedPassword,
-            role: invite.role
+            role: "employee"
         });
 
-        // await invite.destroy();
+        await invite.destroy();
 
         res.json({
             message: "Account created successfully"
         });
 
     } catch (error) {
-        console.log(error);
+        console.log("ACCEPT INVITE ERROR:", error);
         res.status(500).json({
-            message: "Server error"
+            message: error.message
         });
     }
 };
