@@ -29,7 +29,7 @@ exports.sendInvite = async (req, res) => {
 
         const { data, error } = await resend.emails.send({
             from: "onboarding@resend.dev",
-            to: "gokulnagarajan101@gmail.com",
+            to: "saranponnusamy2853@gmail.com",
             subject: "You're Invited",
             html: `
                 <h1>Welcome ${name}</h1>
