@@ -244,10 +244,10 @@ exports.forgotPassword = async (req, res) => {
         });
 
     } catch (error) {
-
-        res.status(500).json({
-            message: "Server error"
-        });
+    console.log("FORGOT PASSWORD ERROR:", error);
+    res.status(500).json({
+        message: error.message
+    });
     }
 };
 
