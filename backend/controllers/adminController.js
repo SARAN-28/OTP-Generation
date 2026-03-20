@@ -27,7 +27,7 @@ exports.sendInvite = async (req, res) => {
         const inviteLink =
             `${process.env.FRONTEND_URL}/accept-invite?token=${token}`;
 
-        await resend.emails.send({
+        const { data, error } = await resend.emails.send({
             from: "onboarding@resend.dev",
             to: "gokulnagarajan101@gmail.com",
             subject: "You're Invited",
@@ -39,6 +39,16 @@ exports.sendInvite = async (req, res) => {
                 <strong>Note:</strong> Invite link is valid for 1 day.</h3>
             `
         });
+
+        console.log("RESEND DATA:", data);
+        console.log("RESEND ERROR:", error);
+
+        if (error) {
+            return res.status(400).json({
+                message: "Email failed",
+                error: error
+            });
+        }
 
         res.json({
             message: "Invitation successfully sent to Employee"
